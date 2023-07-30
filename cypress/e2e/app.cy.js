@@ -26,6 +26,7 @@ describe('TodoMVC - React', function () {
   let TODO_ITEM_TWO = 'feed the cat'
   let TODO_ITEM_THREE = 'book a doctors appointment'
 
+
   beforeEach(function () {
     // By default Cypress will automatically
     // clear the Local Storage prior to each
@@ -96,6 +97,32 @@ describe('TodoMVC - React', function () {
     // https://on.cypress.io/as
 
     it('should allow me to add todo items', function () {
+      it('should add the specified todo items', function () {
+        // Add the specified todo items
+        cy.get('.new-todo').type('Make every second count{enter}');
+        cy.get('.new-todo').type('Invest in yourself{enter}');
+        cy.get('.new-todo').type('Learn Cypress{enter}');
+  
+        // Verify that the items are rendered and contain the correct text
+        cy.get('.todo-list li').should('have.length', 6); // Assuming there were already 3 todo items from previous tests
+        cy.get('.todo-list li').eq(3).should('contain', 'Make every second count');
+        cy.get('.todo-list li').eq(4).should('contain', 'Invest in yourself');
+        cy.get('.todo-list li').eq(5).should('contain', 'Learn Cypress');
+      });
+  
+      it('should mark "Learn Cypress" as complete', function () {
+        // Find the "Learn Cypress" todo item and mark it as complete
+        cy.contains('Learn Cypress').parent().find('.toggle').check();
+  
+        // Verify that "Learn Cypress" has been marked as complete
+        cy.contains('Learn Cypress').should('have.class', 'completed');
+      });
+  
+      it('should validate the text and completion status of "Learn Cypress"', function () {
+        // Verify that the text of "Learn Cypress" is correct and it has been marked as complete
+        cy.contains('Learn Cypress').should('have.text', 'Learn Cypress');
+        cy.contains('Learn Cypress').parent().should('have.class', 'completed');
+      });
       // create 1st todo
       cy.get('.new-todo')
       .type(TODO_ITEM_ONE)
